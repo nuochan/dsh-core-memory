@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.1 (2026-11-14) — Fix bundle self-reference so the plugin activates
+
+### Fixed
+
+- **Bundle patch referenced the unscoped upstream package name.** `cordis.patch.yml` inserted the plugin with `name: 'dsh-core-memory'`, but this fork is published as `@nuochan/dsh-core-memory`. On profiles where only the scoped package is installed, the loader failed with `ERR_MODULE_NOT_FOUND: Cannot find package 'dsh-core-memory'` and the plugin never activated (observed on DSH desktop 0.2.1-rc.5 through 0.2.2-rc.3). The patch now references `@nuochan/dsh-core-memory`. The plugin identity (`id: dsh-core-memory`, exported `name`) is unchanged.
+
 ## 2.0.0 (2026-10-18) — Enhanced fork for full ambient injection and configurable surfaces
 
 **Forked from:** `dsh-core-memory` v1.0.1 by jiuling ([npm](https://www.npmjs.com/package/dsh-core-memory))
