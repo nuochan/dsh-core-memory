@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.2 (2026-11-17) — Fix client registration id so the persona settings page loads
+
+### Fixed
+
+- **Browser half registered under the unscoped upstream id.** `lib/client.js` submitted `window.__ModuleLoader__.load({ id: 'dsh-core-memory', … })`. `@deepseek-ai/dsh-client-modules` keys a factory by the registered id and then looks the id up in the client graph, where the row is the package name; since 2.0.0 this fork is published as `@nuochan/dsh-core-memory`, so the lookup found nothing and the Web UI reported `client-modules: could not load "@nuochan/dsh-core-memory": … loaded without registering "@nuochan/dsh-core-memory" via __ModuleLoader__.load` (observed on DSH desktop 0.2.2-rc.3). The registration id now equals the package name, which is the loader's stated contract. The header comment naming the served bundle path was corrected in the same pass; the `/dsh-core-memory/persona` HTTP route is a host route and is unchanged.
+- **Scope of the breakage.** Only the persona settings section failed to appear. The Host half — memory tools, ambient injection, and the `/dsh-core-memory/persona` route — activated normally, because `cordis.patch.yml` mounts the plugin by package name and never consults the client registration id.
+- **Second instance of the 2.0.1 rename miss.** That release corrected the same unscoped self-reference in `cordis.patch.yml` and recorded the identity (`id: dsh-core-memory`, exported `name`) as intentionally unchanged. The client registration id was overlooked there; it is the one identity string that must equal the package name, because the browser module loader indexes by it.
+
 ## 2.0.1 (2026-11-14) — Fix bundle self-reference so the plugin activates
 
 ### Fixed
